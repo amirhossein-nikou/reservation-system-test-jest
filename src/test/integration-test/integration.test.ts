@@ -1,3 +1,4 @@
+import * as genId from "../../app/data/IdGenerator";
 import { Account } from "../../app/model/AuthModel";
 import { Reservation } from "../../app/model/ReservationModel";
 import { HTTP_CODES, HTTP_METHODS } from "../../app/model/ServerModel";
@@ -34,6 +35,7 @@ describe('integration tests => ', () => {
         const resultBody = await result.json()
         expect(result.status).toBe(HTTP_CODES.CREATED);
         expect(resultBody.userId).toBeDefined()
+        console.log(`connected to => ${process.env.HOST}:${process.env.PORT}`);
     })
     test('should register new user - use http module', async () => {
         const result = await makeAwesomeRequest({
@@ -152,5 +154,23 @@ describe('integration tests => ', () => {
             }
         })
         expect(result.status).toBe(HTTP_CODES.BAD_REQUEST);
+    })
+    test('snap shot demo',async ()=> {
+        jest.spyOn(genId,'generateRandomId').mockReturnValueOnce('1234')
+        await fetch(`${URL}/reservation`, {
+            method: HTTP_METHODS.POST,
+            body: JSON.stringify(reservation),
+            headers: {
+                authorization: token
+            }
+        })
+        const result = await fetch(`${URL}/reservation/1234`, {
+            method: HTTP_METHODS.GET,
+            headers: {
+                authorization: token
+            }
+        })
+        const resultBody = await result.json()
+        expect(resultBody).toMatchSnapshot()
     })
 })
