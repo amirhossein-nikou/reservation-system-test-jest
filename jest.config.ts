@@ -11,5 +11,8 @@ const config: Config.InitialOptions = {
     testMatch: [
         `<rootDir>/src/test/integration-test/**/*.test.ts`
     ],
+    setupFiles: [
+        `<rootDir>/src/test/integration-test/utils/config.ts`
+    ] // use env in integration testing
 }
 export default config;
